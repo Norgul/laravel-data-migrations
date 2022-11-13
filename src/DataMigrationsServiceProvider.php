@@ -1,0 +1,43 @@
+<?php
+
+declare(strict_types=1);
+
+namespace Asseco\Attachments;
+
+use Asseco\Attachments\App\Contracts\Attachment;
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\ServiceProvider;
+
+class DataMigrationsServiceProvider extends ServiceProvider
+{
+    /**
+     * Register the application services.
+     */
+    public function register(): void
+    {
+        $this->mergeConfigFrom(__DIR__ . '/../config/asseco-attachments.php', 'asseco-attachments');
+        $this->loadRoutesFrom(__DIR__ . '/../routes/api.php');
+
+        if (config('asseco-attachments.migrations.run')) {
+            $this->loadMigrationsFrom(__DIR__ . '/../migrations');
+        }
+    }
+
+    /**
+     * Bootstrap the application services.
+     */
+    public function boot(): void
+    {
+        $this->publishes([
+            __DIR__ . '/../migrations' => database_path('migrations'),
+        ], 'asseco-attachments');
+
+        $this->publishes([
+            __DIR__ . '/../config/asseco-attachments.php' => config_path('asseco-attachments.php'),
+        ], 'asseco-attachments');
+
+        $this->app->bind(Attachment::class, config('asseco-attachments.models.attachment'));
+
+        Route::model('attachment', get_class(app(Attachment::class)));
+    }
+}
