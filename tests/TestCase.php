@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Asseco\Attachments\Tests;
+namespace Norgul\DataMigrations\Tests;
 
 use Asseco\Attachments\DataMigrationsServiceProvider;
 

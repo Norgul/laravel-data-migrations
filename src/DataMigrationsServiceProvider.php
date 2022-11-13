@@ -2,10 +2,8 @@
 
 declare(strict_types=1);
 
-namespace Asseco\Attachments;
+namespace Norgul\DataMigrations;
 
-use Asseco\Attachments\App\Contracts\Attachment;
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\ServiceProvider;
 
 class DataMigrationsServiceProvider extends ServiceProvider
@@ -15,12 +13,8 @@ class DataMigrationsServiceProvider extends ServiceProvider
      */
     public function register(): void
     {
-        $this->mergeConfigFrom(__DIR__ . '/../config/asseco-attachments.php', 'asseco-attachments');
+        $this->mergeConfigFrom(__DIR__ . '/../config/data-migrations.php', 'data-migrations');
         $this->loadRoutesFrom(__DIR__ . '/../routes/api.php');
-
-        if (config('asseco-attachments.migrations.run')) {
-            $this->loadMigrationsFrom(__DIR__ . '/../migrations');
-        }
     }
 
     /**
@@ -30,14 +24,10 @@ class DataMigrationsServiceProvider extends ServiceProvider
     {
         $this->publishes([
             __DIR__ . '/../migrations' => database_path('migrations'),
-        ], 'asseco-attachments');
+        ], 'data-migrations');
 
         $this->publishes([
-            __DIR__ . '/../config/asseco-attachments.php' => config_path('asseco-attachments.php'),
-        ], 'asseco-attachments');
-
-        $this->app->bind(Attachment::class, config('asseco-attachments.models.attachment'));
-
-        Route::model('attachment', get_class(app(Attachment::class)));
+            __DIR__ . '/../config/data-migrations.php' => config_path('data-migrations.php'),
+        ], 'data-migrations');
     }
 }
