@@ -5,7 +5,6 @@ declare(strict_types=1);
 namespace Norgul\DataMigrations;
 
 use Illuminate\Database\Console\Migrations\ResetCommand;
-use Illuminate\Database\Console\Migrations\RollbackCommand;
 use Illuminate\Database\Console\Migrations\StatusCommand;
 use Illuminate\Database\Migrations\DatabaseMigrationRepository;
 use Illuminate\Database\Migrations\MigrationCreator;
@@ -14,6 +13,7 @@ use Illuminate\Support\ServiceProvider;
 use Norgul\DataMigrations\App\Console\Commands\InstallCommand;
 use Norgul\DataMigrations\App\Console\Commands\MigrateCommand;
 use Norgul\DataMigrations\App\Console\Commands\MigrateMakeCommand;
+use Norgul\DataMigrations\App\Console\Commands\RollbackCommand;
 
 class DataMigrationsServiceProvider extends ServiceProvider
 {
@@ -23,14 +23,14 @@ class DataMigrationsServiceProvider extends ServiceProvider
      * @var array
      */
     protected $commands = [
-        'DataMigrate'        => 'command.data-migrate',
+        'DataMigrate'         => 'command.data-migrate',
         //        'DataMigrateFresh'    => 'command.data-migrate.fresh',
-        'DataMigrateInstall' => 'command.data-migrate.install',
+        'DataMigrateInstall'  => 'command.data-migrate.install',
         //        'DataMigrateRefresh'  => 'command.data-migrate.refresh',
         //        'DataMigrateReset'    => 'command.data-migrate.reset',
-        //        'DataMigrateRollback' => 'command.data-migrate.rollback',
+        'DataMigrateRollback' => 'command.data-migrate.rollback',
         //        'DataMigrateStatus'   => 'command.data-migrate.status',
-        'DataMigrateMake'    => 'command.data-migrate.make',
+        'DataMigrateMake'     => 'command.data-migrate.make',
     ];
 
     /**
@@ -39,7 +39,6 @@ class DataMigrationsServiceProvider extends ServiceProvider
     public function register(): void
     {
         $this->mergeConfigFrom(__DIR__ . '/../config/data-migrations.php', 'data-migrations');
-        $this->loadRoutesFrom(__DIR__ . '/../routes/api.php');
     }
 
     /**
@@ -50,12 +49,6 @@ class DataMigrationsServiceProvider extends ServiceProvider
         $this->publishes([
             __DIR__ . '/../config/data-migrations.php' => config_path('data-migrations.php'),
         ], 'data-migrations');
-
-        $this->app->when(MigrationCreator::class)
-            ->needs('$customStubPath')
-            ->give(function ($app) {
-                return $app->basePath('data-migrations');
-            });
 
         $this->registerRepository();
         $this->registerMigrator();
@@ -100,7 +93,7 @@ class DataMigrationsServiceProvider extends ServiceProvider
     protected function registerCreator()
     {
         $this->app->singleton('data-migration.creator', function ($app) {
-            return new MigrationCreator($app['files'], $app->basePath('stubs'));
+            return new MigrationCreator($app['files'], __DIR__ . '/Database/Stubs');
         });
     }
 
@@ -130,18 +123,18 @@ class DataMigrationsServiceProvider extends ServiceProvider
             return new MigrateCommand($app['data-migrator']);
         });
     }
-
-    /**
-     * Register the command.
-     *
-     * @return void
-     */
-    protected function registerDataMigrateFreshCommand()
-    {
-        $this->app->singleton('command.data-migrate.fresh', function () {
-            return new \Illuminate\Database\Console\Migrations\FreshCommand;
-        });
-    }
+//
+//    /**
+//     * Register the command.
+//     *
+//     * @return void
+//     */
+//    protected function registerDataMigrateFreshCommand()
+//    {
+//        $this->app->singleton('command.data-migrate.fresh', function () {
+//            return new \Illuminate\Database\Console\Migrations\FreshCommand;
+//        });
+//    }
 
     /**
      * Register the command.
@@ -174,29 +167,29 @@ class DataMigrationsServiceProvider extends ServiceProvider
         });
     }
 
-    /**
-     * Register the command.
-     *
-     * @return void
-     */
-    protected function registerDataMigrateRefreshCommand()
-    {
-        $this->app->singleton('command.data-migrate.refresh', function () {
-            return new \Illuminate\Database\Console\Migrations\RefreshCommand;
-        });
-    }
+//    /**
+//     * Register the command.
+//     *
+//     * @return void
+//     */
+//    protected function registerDataMigrateRefreshCommand()
+//    {
+//        $this->app->singleton('command.data-migrate.refresh', function () {
+//            return new \Illuminate\Database\Console\Migrations\RefreshCommand;
+//        });
+//    }
 
-    /**
-     * Register the command.
-     *
-     * @return void
-     */
-    protected function registerDataMigrateResetCommand()
-    {
-        $this->app->singleton('command.data-migrate.reset', function ($app) {
-            return new ResetCommand($app['migrator']);
-        });
-    }
+//    /**
+//     * Register the command.
+//     *
+//     * @return void
+//     */
+//    protected function registerDataMigrateResetCommand()
+//    {
+//        $this->app->singleton('command.data-migrate.reset', function ($app) {
+//            return new ResetCommand($app['data-migrator']);
+//        });
+//    }
 
     /**
      * Register the command.
@@ -206,21 +199,21 @@ class DataMigrationsServiceProvider extends ServiceProvider
     protected function registerDataMigrateRollbackCommand()
     {
         $this->app->singleton('command.data-migrate.rollback', function ($app) {
-            return new RollbackCommand($app['migrator']);
+            return new RollbackCommand($app['data-migrator']);
         });
     }
-
-    /**
-     * Register the command.
-     *
-     * @return void
-     */
-    protected function registerDataMigrateStatusCommand()
-    {
-        $this->app->singleton('command.data-migrate.status', function ($app) {
-            return new StatusCommand($app['migrator']);
-        });
-    }
+//
+//    /**
+//     * Register the command.
+//     *
+//     * @return void
+//     */
+//    protected function registerDataMigrateStatusCommand()
+//    {
+//        $this->app->singleton('command.data-migrate.status', function ($app) {
+//            return new StatusCommand($app['migrator']);
+//        });
+//    }
 
     /**
      * Get the services provided by the provider.

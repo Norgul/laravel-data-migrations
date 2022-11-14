@@ -2,13 +2,12 @@
 
 namespace Norgul\DataMigrations\App\Console\Commands;
 
-use Illuminate\Console\ConfirmableTrait;
 use Illuminate\Database\Console\Migrations\MigrateCommand as LaravelMigrateCommand;
-use Illuminate\Support\Facades\File;
+use Norgul\DataMigrations\App\Traits\ProvidesMigrationPath;
 
 class MigrateCommand extends LaravelMigrateCommand
 {
-    use ConfirmableTrait;
+    use ProvidesMigrationPath;
 
     /**
      * The name and signature of the console command.
@@ -54,17 +53,6 @@ class MigrateCommand extends LaravelMigrateCommand
         });
 
         return 0;
-    }
-
-    protected function getMigrationPath()
-    {
-        $path = $this->laravel->databasePath() . DIRECTORY_SEPARATOR . 'data-migrations';
-
-        if (!File::isDirectory($path)) {
-            File::makeDirectory($path, 0755, true, true);
-        }
-
-        return $path;
     }
 
     /**

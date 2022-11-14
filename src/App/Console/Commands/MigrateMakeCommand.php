@@ -3,10 +3,12 @@
 namespace Norgul\DataMigrations\App\Console\Commands;
 
 use Illuminate\Database\Console\Migrations\MigrateMakeCommand as LaravelMigrateMakeCommand;
-use Illuminate\Support\Facades\File;
+use Norgul\DataMigrations\App\Traits\ProvidesMigrationPath;
 
 class MigrateMakeCommand extends LaravelMigrateMakeCommand
 {
+    use ProvidesMigrationPath;
+
     /**
      * The console command signature.
      *
@@ -23,15 +25,4 @@ class MigrateMakeCommand extends LaravelMigrateMakeCommand
      * @var string
      */
     protected $description = 'Create a new data migration file';
-
-    protected function getMigrationPath()
-    {
-        $path = $this->laravel->databasePath() . DIRECTORY_SEPARATOR . 'data-migrations';
-
-        if (!File::isDirectory($path)) {
-            File::makeDirectory($path, 0755, true, true);
-        }
-
-        return $path;
-    }
 }
