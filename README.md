@@ -21,7 +21,8 @@ structure with, for the most part, the same API they provide.
 
 Remember you can add ``-h`` flag to show all available options for a particular command.
 
-## Make Command
+# Commands
+## Make Data Migration
 
 ``php artisan make:data-migration {name}`` 
 
@@ -40,7 +41,7 @@ Even though you can reference Eloquent classes and even your seeders from within
 change over time, thus leaving your data migrations execute differently in the future. Always using ``DB``
 facade will ensure that end results are always the same.
 
-## Data Migrate Command
+## Data Migrate
 
 ``php artisan data-migrate``
 
@@ -49,13 +50,13 @@ migrations are ran (by executing `up()` function).
 
 Command will automatically create ``data_migrations`` table in the DB if it doesn't already exist.
 
-## Data Migrate Rollback Command
+## Data Migrate Rollback
 
 ``php artisan data-migrate:rollback``
 
 You can revert your changes by executing this command which will trigger ``down()`` function in the data migration.
 
-## Data Migrate Install Command
+## Data Migrate Install
 
 ``php artisan data-migrate:install``
 
