@@ -1,7 +1,7 @@
 # Laravel Data Migrations
 
-This package is used to deliver seamless data migrations to Laravel. Data migrations are sort of a VCS
-for your mandatory DB data without which the app wouldn't function.
+This package is used to deliver seamless data migrations to Laravel. Data migrations are version control system
+for your mandatory DB data (like statuses, types, etc.) without which the app wouldn't function.
 
 One alternative is to burn these within your plain migrations, other is just to use seeders at which point
 you need to devise a mechanism to split production grade seeders from the development ones.
@@ -16,9 +16,10 @@ Service provider will be registered automatically.
 
 # Usage
 
-You can start using the package by running these commands which are following Laravel ``migration`` command
-variants with a mostly same API they provide. Remember you can add ``-h`` flag to show all available options
-for a particular command.
+You can start using the package by running commands below which are following Laravel ``migration`` command
+structure with, for the most part, the same API they provide. 
+
+Remember you can add ``-h`` flag to show all available options for a particular command.
 
 ## Make Command
 
@@ -27,7 +28,7 @@ for a particular command.
 Create your first data migration. This will create `data-migrations` directory in your ``database`` 
 directory if it doesn't already exist, which is the place where you'll find already familiar naming structure.
 
-Package is using Laravel migrator in the background, so if you run something like:
+Package is using Laravel migrator in the background, so if you run:
 ```
 php artisan make:data-migration add_user_types_to_users_table
 ```
@@ -44,7 +45,20 @@ facade will ensure that end results are always the same.
 ``php artisan data-migrate``
 
 Execute your migrations with ``data-migrate`` command. These will be executed once, in the same way as standard
-migrations are ran. Command will automatically create ``data_migrations`` table in the DB if it doesn't already 
-exist. It is using ``php artisan data-migrate:install`` command in the background, but you don't need to explicitly
-run it. 
+migrations are ran (by executing `up()` function).
 
+Command will automatically create ``data_migrations`` table in the DB if it doesn't already exist.
+
+## Data Migrate Rollback Command
+
+``php artisan data-migrate:rollback``
+
+You can revert your changes by executing this command which will trigger ``down()`` function in the data migration.
+
+## Data Migrate Install Command
+
+``php artisan data-migrate:install``
+
+You never need to run this command explicitly. It is here for documentation purposes.
+
+This command will create ``data_migrations`` table in your DB.
